@@ -51,13 +51,11 @@ COUNT(DISTINCT(listings_austin.id)) AS Num_of_listings,<BR>
 COUNT(DISTINCT(listings_austin.host_id)) AS Num_of_hosts<BR>
 FROM listings_austin;
 
-<BR><BR>
 -- 2. Number of hosts
 SELECT COUNT(DISTINCT(listings_austin.host_id)) AS Num_of_hosts<BR>
 FROM listings_austin;<BR>
 -- Number of hosts = 9556
 
-<BR><BR>
 -- 3. Hosts with multiple listings<BR>
 SELECT<BR>
 num_listings_per_host,<BR>
