@@ -51,7 +51,7 @@ COUNT(DISTINCT(listings_austin.id)) AS Num_of_listings,<BR>
 COUNT(DISTINCT(listings_austin.host_id)) AS Num_of_hosts<BR>
 FROM listings_austin;
 
--- 2. Number of hosts
+-- 2. Number of hosts<BR>
 SELECT COUNT(DISTINCT(listings_austin.host_id)) AS Num_of_hosts<BR>
 FROM listings_austin;<BR>
 -- Number of hosts = 9556
@@ -69,29 +69,28 @@ num_listings_per_host;<BR>
  -- There are hosts with a single listing and also with little less than 400 listings.<BR>
  -- Close to 80% of hosts are single-property hosts.<BR>
 
- 
- -- 4. Average price and number of listings by neighbourhood
- -- For Cypress Mill, price value has a comma. This affects the average function resulting in wrong result.
- -- Remove the commas in the price column while calculating the average price.
-SELECT
-neighbourhood, 
-COUNT(id) AS Num_listings, 
-ROUND(AVG(CAST(REPLACE(price, ',', '') AS INTEGER)),2) AS Average_price
-FROM listings_austin
-GROUP BY neighbourhood
-ORDER BY Average_price ASC;
- -- Cypress Mill having a single listing has the highest average price, around 50% more than at Burnet County.
+ -- 4. Average price and number of listings by neighbourhood<BR>
+ -- For Cypress Mill, price value has a comma. This affects the average function resulting in wrong result.<BR>
+ -- Remove the commas in the price column while calculating the average price.<BR>
+SELECT<BR>
+neighbourhood,<BR> 
+COUNT(id) AS Num_listings,<BR> 
+ROUND(AVG(CAST(REPLACE(price, ',', '') AS INTEGER)),2) AS Average_price<BR>
+FROM listings_austin<BR>
+GROUP BY neighbourhood<BR>
+ORDER BY Average_price ASC;<BR>
+ -- Cypress Mill having a single listing has the highest average price, around 50% more than at Burnet County.<BR>
 
- -- Neighborhoods ordered by number of listings in descending
-SELECT
-neighbourhood,
-COUNT(id) AS Num_listings,
-ROUND(COUNT(id)*100.0/(SELECT COUNT(DISTINCT (id)) FROM listings_austin),2) AS Perc_listings
-FROM listings_austin
-GROUP BY neighbourhood
-ORDER BY num_listings DESC LIMIT 5;
--- Austin has largest number of listings. 
--- There is also a significant number listings assigned to a neighbourhood with a NULL value.
+ -- Neighborhoods ordered by number of listings in descending<BR>
+SELECT<BR>
+neighbourhood,<BR>
+COUNT(id) AS Num_listings,<BR>
+ROUND(COUNT(id)*100.0/(SELECT COUNT(DISTINCT (id)) FROM listings_austin),2) AS Perc_listings<BR>
+FROM listings_austin<BR>
+GROUP BY neighbourhood<BR>
+ORDER BY num_listings DESC LIMIT 5;<BR>
+-- Austin has largest number of listings.<BR> 
+-- There is also a significant number listings assigned to a neighbourhood with a NULL value.<BR>
 
 
 -- 5. Price per bed by neighbourhood
