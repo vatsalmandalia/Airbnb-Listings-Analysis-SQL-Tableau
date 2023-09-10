@@ -44,38 +44,32 @@ Below is the queries implemented in DB Browser for SQLite for addressing the abo
 -- Removing the '$' sign in 'price' column
 -- Data type changed through 'Edit' in menu bar and 'Modify table'.
 
-/* --------------- Data Exploration --------------- */
--- 1. Lets look at number of listings and hosts
-SELECT
-COUNT(DISTINCT(listings_austin.id)) AS Num_of_listings,
-COUNT(DISTINCT(listings_austin.host_id)) AS Num_of_hosts
+/* --------------- Data Exploration --------------- */<BR>
+-- 1. Lets look at number of listings and hosts<BR>
+SELECT<BR>
+COUNT(DISTINCT(listings_austin.id)) AS Num_of_listings,<BR>
+COUNT(DISTINCT(listings_austin.host_id)) AS Num_of_hosts<BR>
 FROM listings_austin;
 
-
+<BR><BR>
 -- 2. Number of hosts
-SELECT COUNT(DISTINCT(listings_austin.host_id)) AS Num_of_hosts
-FROM listings_austin;
+SELECT COUNT(DISTINCT(listings_austin.host_id)) AS Num_of_hosts<BR>
+FROM listings_austin;<BR>
 -- Number of hosts = 9556
 
-
--- 3. Hosts with multiple listings
-SELECT host_id, COUNT(DISTINCT id) AS num_listings_per_host
-FROM listings_austin
-GROUP BY host_id;
-
-SELECT
-num_listings_per_host,
-COUNT(host_id) AS num_hosts,
-ROUND(COUNT(host_id)*100.0/(SELECT COUNT(DISTINCT (host_id)) FROM listings_austin),2) AS Host_percentage
-FROM (SELECT host_id, COUNT(DISTINCT id) AS num_listings_per_host
-			    FROM listings_austin
-				GROUP BY host_id)
-GROUP BY
-num_listings_per_host
-ORDER BY
-num_listings_per_host; 
- -- There are hosts with a single listing and also with little less than 400 listings.
- -- Close to 80% of hosts are single-property hosts.
+<BR><BR>
+-- 3. Hosts with multiple listings<BR>
+SELECT<BR>
+num_listings_per_host,<BR>
+COUNT(host_id) AS num_hosts,<BR>
+ROUND(COUNT(host_id)*100.0/(SELECT COUNT(DISTINCT (host_id)) FROM listings_austin),2) AS Host_percentage<BR>
+FROM (SELECT host_id, COUNT(DISTINCT id) AS num_listings_per_host FROM listings_austin GROUP BY host_id)<BR>
+GROUP BY<BR>
+num_listings_per_host<BR>
+ORDER BY<BR>
+num_listings_per_host;<BR>
+ -- There are hosts with a single listing and also with little less than 400 listings.<BR>
+ -- Close to 80% of hosts are single-property hosts.<BR>
 
  
  -- 4. Average price and number of listings by neighbourhood
