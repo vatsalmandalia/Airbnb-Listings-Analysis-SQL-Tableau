@@ -145,3 +145,13 @@ Price per bed: Rollingwood has the highest price per bed rate around $1000, 80% 
 - **Revenue potential**: For the next 30 days, Austin projects close to 47% revenue share. Entire homes or apartments have more than 50-60% revenue share in majority of neighborhoods.
 - **Superhosts**: 32% of property owners are superhosts, with majority of them in Austin and 54 such neighborhoods having more superhosts than regular hosts.
 - **Ratings**: Superhosts appear to receive higher review scores on average for cleanliness, location, communication etc. than regular hosts.
+
+## Dashboards in Tableau
+
+I have created two dashboards depicting two sets of analysis and insights.
+- Price and Proportion Analysis
+- Revenue Potential and Superhost Status
+
+Here is the link to explore the interactive visualizations in Tableau Public.<BR>
+[Airbnb Listings Analysis](https://public.tableau.com/views/AirbnbAnalysisforAustin/PriceandProportionAnalysis?:language=en-GB&:display_count=n&:origin=viz_share_link)
+
