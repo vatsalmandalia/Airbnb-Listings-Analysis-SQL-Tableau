@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/vatsalmandalia/Desktop/Airbnb_database/Airbnb_austin.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser query" current="2"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="10281"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,15:maincalendar_austin"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="calendar_austin" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort><column index="2" mode="0"/></sort><column_widths><column index="1" value="78"/><column index="2" value="88"/><column index="3" value="73"/><column index="4" value="65"/><column index="5" value="117"/><column index="6" value="135"/><column index="7" value="137"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="listings_austin" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="70"/><column index="2" value="277"/><column index="3" value="132"/><column index="4" value="101"/><column index="5" value="300"/><column index="6" value="300"/><column index="7" value="300"/><column index="8" value="300"/><column index="9" value="83"/><column index="10" value="300"/><column index="11" value="180"/><column index="12" value="88"/><column index="13" value="300"/><column index="14" value="300"/><column index="15" value="157"/><column index="16" value="154"/><column index="17" value="168"/><column index="18" value="144"/><column index="19" value="300"/><column index="20" value="300"/><column index="21" value="176"/><column index="22" value="153"/><column index="23" value="196"/><column index="24" value="202"/><column index="25" value="164"/><column index="26" value="171"/><column index="27" value="251"/><column index="28" value="192"/><column index="29" value="245"/><column index="30" value="133"/><column index="31" value="139"/><column index="32" value="221"/><column index="33" value="115"/><column index="34" value="116"/><column index="35" value="87"/><column index="36" value="125"/><column index="37" value="81"/><column index="38" value="50"/><column index="39" value="300"/><column index="40" value="85"/><column index="41" value="135"/><column index="42" value="137"/><column index="43" value="216"/><column index="44" value="218"/><column index="45" value="218"/><column index="46" value="220"/><column index="47" value="208"/><column index="48" value="210"/><column index="49" value="141"/><column index="50" value="123"/><column index="51" value="117"/><column index="52" value="117"/><column index="53" value="117"/><column index="54" value="124"/><column index="55" value="174"/><column index="56" value="156"/><column index="57" value="190"/><column index="58" value="198"/><column index="59" value="97"/><column index="60" value="93"/><column index="61" value="166"/><column index="62" value="186"/><column index="63" value="202"/><column index="64" value="178"/><column index="65" value="236"/><column index="66" value="181"/><column index="67" value="161"/><column index="68" value="59"/><column index="69" value="135"/><column index="70" value="236"/><column index="71" value="300"/><column index="72" value="300"/><column index="73" value="300"/><column index="74" value="156"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="reviews_austin" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="78"/><column index="2" value="157"/><column index="3" value="88"/><column index="4" value="96"/><column index="5" value="136"/><column index="6" value="300"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">/* Airbnb Listings Analysis through SQL*/
+
+-- Data preparation
+-- Removing the '$' sign in 'price' column
+-- Data type changed through 'Edit' in menu bar and 'Modify table'.
+
+/* --------------- Data Exploration --------------- */
+-- 1. Lets look at number of listings and hosts
+SELECT
+COUNT(DISTINCT(listings_austin.id)) AS Num_of_listings,
+COUNT(DISTINCT(listings_austin.host_id)) AS Num_of_hosts
+FROM listings_austin;
+
+
+-- 2. Number of hosts
+SELECT COUNT(DISTINCT(listings_austin.host_id)) AS Num_of_hosts
+FROM listings_austin;
+-- Number of hosts = 9556
+
+
+-- 3. Hosts with multiple listings
+SELECT
+num_listings_per_host,
+COUNT(host_id) AS num_hosts,
+ROUND(COUNT(host_id)*100.0/(SELECT COUNT(DISTINCT (host_id)) FROM listings_austin),2) AS Host_percentage
+FROM (SELECT host_id, COUNT(DISTINCT id) AS num_listings_per_host
+			    FROM listings_austin
+				GROUP BY host_id)
+GROUP BY
+num_listings_per_host
+ORDER BY
+num_listings_per_host; 
+ -- There are hosts with a single listing and also with little less than 400 listings.
+ -- Close to 80% of hosts are single-property hosts.
+
+ 
+ -- 4. Average price and number of listings by neighbourhood
+ -- For Cypress Mill, price value has a comma. This affects the average function resulting in wrong result.
+ -- Remove the commas in the price column while calculating the average price.
+SELECT
+neighbourhood, 
+COUNT(id) AS Num_listings, 
+ROUND(AVG(CAST(REPLACE(price, ',', '') AS INTEGER)),2) AS Average_price
+FROM listings_austin
+GROUP BY neighbourhood
+ORDER BY Average_price DESC;
+ -- Cypress Mill having a single listing has the highest average price, around 50% more than at Burnet County.
+
+ -- Neighborhoods ordered by number of listings in descending
+SELECT
+neighbourhood,
+COUNT(id) AS Num_listings,
+ROUND(COUNT(id)*100.0/(SELECT COUNT(DISTINCT (id)) FROM listings_austin),2) AS Perc_listings
+FROM listings_austin
+GROUP BY neighbourhood
+ORDER BY num_listings DESC LIMIT 5;
+-- Austin has largest number of listings. 
+-- There is also a significant number listings assigned to a neighbourhood with a NULL value.
+
+
+-- 5. Price per bed by neighbourhood
+SELECT neighbourhood, beds, ROUND(SUM(CAST(REPLACE(price, ',', '') AS INTEGER))/SUM(beds),2) AS Price_per_bed
+FROM listings_austin
+GROUP BY neighbourhood
+ORDER BY Price_per_bed DESC LIMIT 5;
+-- Price per bed in Rollingwood, single bed neighbourhood, is 5 times more than at Westlake Hills.
+-- Rollingwood is one of the most affluent and sought-after neighbourhoods in Austin.
+
+
+-- 6. Number of listings by room type and correlation between price and room type
+SELECT
+room_type,
+ROUND(AVG(CAST(REPLACE(price, ',', '') AS INTEGER)),2) AS Average_price,
+COUNT(DISTINCT id) AS Number_of_listings,
+ROUND(COUNT(DISTINCT id)*100.0/(SELECT COUNT(DISTINCT id) FROM listings_austin),2) AS Proportion_of_listings
+FROM
+listings_austin
+GROUP BY
+room_type
+ORDER BY
+Average_price DESC;
+ -- Entire home/apartment is priced higher than others on average.
+ -- 83% of the listings approximately are entire homes or apartments. Hotel and shared rooms are in the minority among all 17071 listings.
+ -- But, it is observed the cost of a hotel room more than combined price of private and shared rooms.
+ 
+ 
+ -- 7. By neighborhood, average price per room type
+SELECT
+neighbourhood,
+room_type,
+ROUND(AVG(CAST(REPLACE(price, ',', '') AS INTEGER)),2) AS Average_price,
+COUNT(DISTINCT id) AS Number_of_listings
+FROM
+listings_austin
+GROUP BY
+neighbourhood,
+room_type
+ORDER BY
+Average_price DESC;
+-- 8 out of the top 10 in average prices are homes or apartments.
+-- Hotel rooms and private rooms in Austin and Rollingwood respectively are other two.
+ 
+ 
+-- 8. Projected revenue for each listing based on number of days it is booked in next 30 days
+SELECT
+id,
+listing_url,
+CAST(REPLACE(price, ',', '') AS INTEGER) AS Price_listing,
+name,
+(30 - availability_30) AS booked_next_30,
+(30 - availability_30)*CAST(REPLACE(price, ',', '') AS INTEGER) AS projected_rev_30
+FROM listings_austin
+ORDER BY projected_rev_30 DESC LIMIT 5;
+
+-- Looking at availability for next year
+SELECT id, listing_url, CAST(REPLACE(price, ',', '') AS INTEGER) AS Price_listing, name, availability_365, property_type,
+(365 - availability_365)*CAST(REPLACE(price, ',', '') AS INTEGER) AS projected_rev_365
+FROM listings_austin
+ORDER BY projected_rev_365 DESC LIMIT 5;
+
+
+-- Now lets understand the revenue numbers by neighbourhood.
+-- Which neighbourhoods lead the way in terms of revenue earned?
+-- 9. Projected revenue for each neighbourhood for the next 30 days
+-- Filtering listings based on last review data. Considering only those listings 
+-- where a review was made in past 6 months from 2022-06-08
+-- Top 5 earners
+SELECT
+neighbourhood,
+SUM((30 - availability_30)*CAST(REPLACE(price, ',', '') AS INTEGER)) AS projected_rev_30,
+ROUND((SUM((30 - availability_30)*CAST(REPLACE(price, ',', '') AS INTEGER))*100.0/
+	(SELECT SUM((30 - availability_30)*CAST(REPLACE(price, ',', '') AS INTEGER)) 
+	  FROM listings_austin WHERE last_review &gt;= '2022-01-01' )),2) AS Revenue_share,
+COUNT(DISTINCT id) AS num_listings
+FROM
+listings_austin
+WHERE
+last_review &gt;= '2022-01-01' AND neighbourhood IS NOT NULL
+GROUP BY
+neighbourhood
+ORDER BY
+projected_rev_30 DESC LIMIT 5;
+
+
+-- Deeper analysis by looking revenue potential by neighbourhood and room type.
+-- Listings filtered where last review &gt;= '2022-01-01'
+-- 10. Revenue potential by neighbourhood and room type
+SELECT
+la.neighbourhood,
+SUM((30 - la.availability_30)*(CAST(REPLACE(la.price, ',', '') AS INTEGER))) AS projected_totalrev_30,
+ROUND(SUM(CASE WHEN la.room_type='Entire home/apt' THEN ((30 - la.availability_30)*(CAST(REPLACE(la.price, ',', '') AS INTEGER))) END)*100.0/
+	(SELECT SUM((30 - availability_30)*CAST(REPLACE(price, ',', '') AS INTEGER)) FROM listings_austin WHERE neighbourhood = la.neighbourhood AND 
+	last_review&gt;='2022-01-01'),2) AS projected_rev_entirehome,
+ROUND(SUM(CASE WHEN la.room_type='Hotel room' THEN ((30 - la.availability_30)*(CAST(REPLACE(la.price, ',', '') AS INTEGER))) END)*100.0/
+	(SELECT SUM((30 - availability_30)*CAST(REPLACE(price, ',', '') AS INTEGER)) FROM listings_austin WHERE neighbourhood = la.neighbourhood AND 
+	last_review&gt;='2022-01-01'),2) AS projected_rev_hotelroom,
+ROUND(SUM(CASE WHEN la.room_type='Private room' THEN ((30 - la.availability_30)*(CAST(REPLACE(la.price, ',', '') AS INTEGER))) END)*100.0/
+	(SELECT SUM((30 - availability_30)*CAST(REPLACE(price, ',', '') AS INTEGER)) FROM listings_austin WHERE neighbourhood = la.neighbourhood AND
+	last_review&gt;='2022-01-01'),2) AS projected_rev_privateroom,
+ROUND(SUM(CASE WHEN la.room_type='Shared room' THEN ((30 - la.availability_30)*(CAST(REPLACE(la.price, ',', '') AS INTEGER))) END)*100.0/
+	(SELECT SUM((30 - availability_30)*CAST(REPLACE(price, ',', '') AS INTEGER)) FROM listings_austin WHERE neighbourhood = la.neighbourhood AND 
+	last_review&gt;='2022-01-01'),2) AS projected_rev_sharedroom
+FROM
+listings_austin AS la
+WHERE
+la.last_review &gt;= '2022-01-01'
+GROUP BY la.neighbourhood ORDER BY projected_totalrev_30 DESC;
+
+
+-- 11. Potential customer list for Airbnb cleaning business
+-- Look for hosts which have got large number of 'dirty' complaints.
+SELECT 
+listings_austin.host_id, listings_austin.host_name,  reviews_austin.comments, COUNT(*) AS num_dirty_comments, 
+reviews_austin.listing_id, listings_austin.name, listings_austin.room_type
+FROM
+reviews_austin
+INNER JOIN
+listings_austin
+ON
+listings_austin.id = reviews_austin.listing_id
+WHERE 
+reviews_austin.comments LIKE '%dirty%'
+GROUP BY 
+listings_austin.host_id, listings_austin.host_name
+ORDER BY 
+num_dirty_comments DESC LIMIT 5;
+
+
+-- Now we look at the reviews and ratings and the factor of superhosts.
+-- A superhost is one who performs exceptionally well in his/her hosting duties. We look into detail in this superhost status.
+-- 12. Proportion of super-hosts
+SELECT
+COUNT (DISTINCT(CASE WHEN host_is_superhost = 't' THEN host_id END)) AS Superhost,
+COUNT (DISTINCT(CASE WHEN host_is_superhost = 'f' THEN host_id END)) AS Regularhost
+FROM listings_austin;
+-- There are 3027 super hosts with around 6524 regular hosts.
+-- Lets look at the number of superhosts and regular hosts by neighbourhood.
+
+
+-- 13. Superhosts Across neighbourhoods
+-- By neighbourhoods, we look number of superhosts.
+SELECT neighbourhood,
+COUNT (DISTINCT(CASE WHEN host_is_superhost = 't' THEN host_id END)) AS Superhost,
+COUNT (DISTINCT(CASE WHEN host_is_superhost = 'f' THEN host_id END)) AS Regularhost
+FROM listings_austin
+WHERE
+last_review &gt;= '2022-01-01'
+GROUP BY neighbourhood
+ORDER BY Superhost DESC;
+-- Austin has the largest number of Superhosts. Majority of the listings are centred in Austin.
+-- We go one step further to understand which neighbourhoods have more super hosts than the regular hosts.
+
+
+--14. Neighbourhoods where superhosts are in majority
+-- Here, data is filtered where the last review date is beyond 2022-01-01
+SELECT neighbourhood,
+COUNT (DISTINCT(CASE WHEN host_is_superhost = 't' THEN host_id END)) AS Superhost,
+COUNT (DISTINCT(CASE WHEN host_is_superhost = 'f' THEN host_id END)) AS Regularhost
+FROM listings_austin
+WHERE
+last_review &gt;= '2022-01-01'
+GROUP BY neighbourhood
+HAVING Superhost &gt; Regularhost
+ORDER BY Superhost DESC;
+-- There are 54 neighbourhoods where superhosts are in majority.
+
+-- 15. Correlation of average price of a listing with superhost status
+SELECT
+ROUND(AVG(CASE WHEN host_is_superhost = 't' THEN (CAST(REPLACE(price, ',', '') AS INTEGER)) END),2) AS Superhost_price,
+ROUND(AVG(CASE WHEN host_is_superhost = 'f' THEN (CAST(REPLACE(price, ',', '') AS INTEGER)) END),2) AS Regularhost_price
+FROM listings_austin;
+-- 276 vs 303, Average price for regular host is greater than for a superhost.
+
+
+-- 16. Average price by neighbourhoods and a superhost status
+SELECT
+neighbourhood,
+ROUND(AVG(CASE WHEN host_is_superhost = 't' THEN CAST(REPLACE(price, ',', '') AS INTEGER) END),2) AS Superhost_avgprice,
+ROUND(AVG(CASE WHEN host_is_superhost = 'f' THEN CAST(REPLACE(price, ',', '') AS INTEGER) END),2) AS Regularhost_avgprice
+FROM
+listings_austin
+WHERE
+last_review &gt;= '2022-01-01'
+GROUP BY
+neighbourhood
+ORDER BY
+Superhost_avgprice DESC LIMIT 10;
+
+
+-- 17. Neighbourhoods where average price  for a super host is greater than for a regular host
+SELECT neighbourhood, ROUND(AVG(CASE WHEN host_is_superhost = 't' THEN 
+				 CAST(REPLACE(price, ',', '') AS INTEGER) END),2) AS Superhost_avg_price
+FROM listings_austin
+WHERE
+last_review &gt;= '2022-01-01'
+GROUP BY neighbourhood
+HAVING Superhost_avg_price &gt; (SELECT AVG(CASE WHEN host_is_superhost = 'f' THEN 
+				 CAST(REPLACE(price, ',', '') AS INTEGER) END))
+ORDER BY Superhost_avg_price DESC;
+-- Sunrise Beach Village, West Lake Hills, Garfield, Kingsland and Jonestown are in top 5 neighbourhoods 
+-- where superhosts charge greater than the regular hosts.
+-- There are 21 neighbourhoods where the average price of listing for super host greater than for a regular host.
+
+
+-- Now we look at the ratings scores for a superhost.
+-- 18. Ratings and cleanliness scores based on review
+SELECT
+host_is_superhost,
+ROUND(AVG(review_scores_rating),2) AS Avg_rating,
+ROUND(AVG(review_scores_cleanliness),2) AS Avg_cleanliness,
+ROUND(AVG(review_scores_accuracy),2) AS Avg_accuracy,
+ROUND(AVG(review_scores_checkin),2) AS Avg_checkin,
+ROUND(AVG(review_scores_communication),2) AS Avg_comms,
+ROUND(AVG(review_scores_location),2) AS Avg_loc
+FROM
+listings_austin
+WHERE
+last_review &gt;= '2022-01-01'
+GROUP BY
+host_is_superhost;
+-- We can see why superhosts perform better than regular hosts from the average ratings.
+-- Superhosts get better ratings for cleanliness, check-in service, communication, location and the final rating also.
+
+-- Other insights
+
+-- 19. Instant bookable - number of listings and average price
+SELECT
+instant_bookable, 
+COUNT(id) AS num_listings, 
+ROUND(AVG(price),2) AS avg_price
+FROM
+listings_austin
+GROUP BY
+instant_bookable
+ORDER BY
+num_listings DESC;
+
+-- 20. Instant bookable - number of listings by neighbourhood
+SELECT
+neighbourhood,
+instant_bookable, 
+COUNT(id) AS num_listings, 
+ROUND(AVG(price),2) AS avg_price
+FROM
+listings_austin
+GROUP BY
+neighbourhood, instant_bookable
+ORDER BY
+num_listings DESC;</sql><current_tab id="0"/></tab_sql></sqlb_project>
