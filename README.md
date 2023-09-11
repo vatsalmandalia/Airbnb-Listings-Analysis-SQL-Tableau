@@ -20,7 +20,11 @@ For my analysis, I am only considering only the data for Austin, Texas.
 
 ## Preparation and Cleaning
 
-There are three datasets sourced from Inside Airbnb - listings, calendar, reviews. In the listings data, the 'price' field is of TEXT data type and contains a non-numeric character '$'. This is treated from the 'Modify table' option in 'Edit' menu.
+There are three datasets sourced from Inside Airbnb - listings, calendar, reviews.
+![Screenshot 2023-09-11 at 11 09 25 AM](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/9fffcbff-8e5d-480f-aca9-76583719405d)
+
+
+In the listings data, the 'price' field is of TEXT data type and contains a non-numeric character '$'. This is treated from the 'Modify table' option in 'Edit' menu.
 
 Data has been scraped on 2022-06-08 from the source. Tools employed are DB Browser for SQLite and Tableau Public.
 
@@ -50,14 +54,10 @@ COUNT(DISTINCT(listings_austin.id)) AS Num_of_listings,<BR>
 COUNT(DISTINCT(listings_austin.host_id)) AS Num_of_hosts<BR>
 FROM listings_austin;
 <BR>
+![Picture 1](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/8de1a5ce-9c4c-489b-a0b8-1dec222fba7e)
 
-**-- 2. Number of hosts**<BR>
-SELECT COUNT(DISTINCT(listings_austin.host_id)) AS Num_of_hosts<BR>
-FROM listings_austin;<BR>
--- Number of hosts = 9556
-<BR>
 
-**-- 3. Hosts with multiple listings**<BR>
+**-- 2. Hosts with multiple listings**<BR>
 SELECT<BR>
 num_listings_per_host,<BR>
 COUNT(host_id) AS num_hosts,<BR>
@@ -70,8 +70,10 @@ num_listings_per_host;<BR>
  -- There are hosts with a single listing and also with little less than 400 listings.<BR>
  -- Close to 80% of hosts are single-property hosts.
 <BR>
+![Screenshot 2023-09-11 at 11 27 24 AM](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/8ce661d3-5f37-4cc9-b018-923b15211584)
 
- **-- 4. Average price and number of listings by neighbourhood**<BR>
+
+ **-- 3. Average price and number of listings by neighbourhood**<BR>
  -- For Cypress Mill, price value has a comma. This affects the average function resulting in wrong result.<BR>
  -- Remove the commas in the price column while calculating the average price.<BR>
 SELECT<BR>
@@ -82,6 +84,8 @@ FROM listings_austin<BR>
 GROUP BY neighbourhood<BR>
 ORDER BY Average_price ASC;<BR>
  -- Cypress Mill having a single listing has the highest average price, around 50% more than at Burnet County.
+![Screenshot 2023-09-11 at 11 30 52 AM](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/aa4f4659-65e1-491d-b236-d0065f806787)
+
 
  -- Neighborhoods ordered by number of listings in descending<BR>
 SELECT<BR>
@@ -94,6 +98,8 @@ ORDER BY num_listings DESC LIMIT 5;<BR>
 -- Austin has largest number of listings.<BR> 
 -- There is also a significant number listings assigned to a neighbourhood with a NULL value.
 <BR>
+![Screenshot 2023-09-11 at 11 32 19 AM](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/5823d64c-b7fc-4db6-bd90-332282086062)
+
 
 **-- 5. Price per bed by neighbourhood**<BR>
 SELECT neighbourhood, beds, ROUND(SUM(CAST(REPLACE(price, ',', '') AS INTEGER))/SUM(beds),2) AS Price_per_bed<BR>
@@ -103,6 +109,8 @@ ORDER BY Price_per_bed DESC LIMIT 5;<BR>
 -- Price per bed in Rollingwood, single bed neighbourhood, is 5 times more than at Westlake Hills.<BR>
 -- Rollingwood is one of the most affluent and sought-after neighbourhoods in Austin.
 <BR>
+![Screenshot 2023-09-11 at 11 34 04 AM](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/df34c3f9-b1a2-4938-b88d-fcf178dda5ac)
+
 
 **-- 6. Number of listings by room type and correlation between price and room type**<BR>
 SELECT<BR>
@@ -120,6 +128,8 @@ Average_price DESC;<BR>
  -- 83% of the listings approximately are entire homes or apartments. Hotel and shared rooms are in the minority among all 17071 listings.<BR>
  -- But, it is observed the cost of a hotel room more than combined price of private and shared rooms.
 <BR>
+![Screenshot 2023-09-11 at 11 35 42 AM](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/f11de5a0-ec55-43c3-ac67-c18153834f06)
+
 
 **-- 7. By neighborhood, average price per room type**<BR>
 SELECT<BR>
@@ -137,6 +147,8 @@ Average_price DESC;<BR>
 -- 8 out of the top 10 in average prices are homes or apartments.<BR>
 -- Hotel rooms and private rooms in Austin and Rollingwood respectively are other two.
 <BR>
+![Screenshot 2023-09-11 at 11 37 03 AM](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/def9af5e-ed75-4340-b5ec-89e00abb5345)
+
 
 **-- 8. Projected revenue for each listing based on number of days it is booked in next 30 days**<BR>
 SELECT<BR>
@@ -148,6 +160,9 @@ name,<BR>
 (30 - availability_30)*CAST(REPLACE(price, ',', '') AS INTEGER) AS projected_rev_30<BR>
 FROM listings_austin<BR>
 ORDER BY projected_rev_30 DESC LIMIT 5;
+<BR>
+![Screenshot 2023-09-11 at 11 38 25 AM](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/03d17cf4-89e3-4efb-8a9e-00b97aef9991)
+
 
 **-- Looking at availability for next year**<BR>
 SELECT id, listing_url, CAST(REPLACE(price, ',', '') AS INTEGER) AS Price_listing, name, availability_365, property_type,<BR>
@@ -155,6 +170,8 @@ SELECT id, listing_url, CAST(REPLACE(price, ',', '') AS INTEGER) AS Price_listin
 FROM listings_austin<BR>
 ORDER BY projected_rev_365 DESC LIMIT 5;
 <BR>
+![Screenshot 2023-09-11 at 11 39 51 AM](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/fc9683a7-16d0-42cb-b910-30e819b8bf72)
+
 
 -- Now lets understand the revenue numbers by neighbourhood.<BR>
 -- Which neighbourhoods lead the way in terms of revenue earned?<BR>
@@ -177,6 +194,8 @@ neighbourhood<BR>
 ORDER BY<BR>
 projected_rev_30 DESC LIMIT 5;
 <BR>
+![Screenshot 2023-09-11 at 11 41 14 AM](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/9b5e6132-addf-4cf7-a676-516768f00e04)
+
 
 -- Deeper analysis by looking revenue potential by neighbourhood and room type.<BR>
 -- Listings filtered where last review >= '2022-01-01'<BR>
@@ -202,6 +221,8 @@ WHERE<BR>
 la.last_review >= '2022-01-01'<BR>
 GROUP BY la.neighbourhood ORDER BY projected_totalrev_30 DESC;
 <BR>
+![Screenshot 2023-09-11 at 11 44 57 AM](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/4a386661-37de-49e7-9156-d33c3b4cf224)
+
 
 **-- 11. Potential customer list for Airbnb cleaning business**<BR>
 -- Look for hosts which have got large number of 'dirty' complaints.<BR>
@@ -221,6 +242,8 @@ listings_austin.host_id, listings_austin.host_name<BR>
 ORDER BY<BR> 
 num_dirty_comments DESC LIMIT 5;
 <BR>
+![Screenshot 2023-09-11 at 11 46 22 AM](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/da865b51-653c-487e-a4ac-65bc22f6f1c9)
+
 
 -- Superhosts<BR>
 -- A superhost is one who performs exceptionally well in his/her hosting duties. We look into detail in this superhost status.<BR>
@@ -232,6 +255,8 @@ FROM listings_austin;<BR>
 -- There are 3027 super hosts with around 6524 regular hosts.<BR>
 -- Lets look at the number of superhosts and regular hosts by neighbourhood.
 <BR>
+![Screenshot 2023-09-11 at 11 48 21 AM](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/58399250-5a57-4d76-bf5e-8c7c9491ba52)
+
 
 **-- 13. Superhosts Across neighbourhoods**<BR>
 -- By neighbourhoods, we look number of superhosts.<BR>
@@ -246,6 +271,8 @@ ORDER BY Superhost DESC;<BR>
 -- Austin has the largest number of Superhosts. Majority of the listings are centred in Austin.<BR>
 -- We go one step further to understand which neighbourhoods have more super hosts than the regular hosts.
 <BR>
+![Picture 2](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/9256a930-8e9e-4f4d-b1a7-b09457a431e6)
+
 
 **-- 14. Neighbourhoods where superhosts are in majority**<BR>
 -- Here, data is filtered where the last review date is beyond 2022-01-01<BR>
@@ -262,6 +289,8 @@ ORDER BY Superhost DESC;<BR>
 -- Kingsbury is one such with zero regular hosts which could tell that the hosts are performing<BR>
 -- exceptionally well in their hosting duties and giving a really good customer experience.<BR>
 <BR>
+![Screenshot 2023-09-11 at 11 54 17 AM](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/7f844d45-c6bc-4283-9134-685754c22058)
+
 
 **-- 15. Correlation of average price of a listing with superhost status**<BR>
 SELECT<BR>
@@ -270,6 +299,8 @@ ROUND(AVG(CASE WHEN host_is_superhost = 'f' THEN (CAST(REPLACE(price, ',', '') A
 FROM listings_austin;<BR>
 -- 276 vs 303, Average price for regular host is greater than for a superhost.<BR>
 <BR>
+![Screenshot 2023-09-11 at 11 55 02 AM](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/5d2162d3-5768-4fd3-bad5-12bd80395370)
+
 
 **-- 16. Average price by neighbourhoods and a superhost status**<BR>
 SELECT<BR>
@@ -285,8 +316,10 @@ neighbourhood<BR>
 ORDER BY<BR>
 Superhost_avgprice DESC LIMIT 10;
 <BR>
+![Screenshot 2023-09-11 at 11 57 01 AM](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/d11e98e9-ef99-4b81-8154-59a5314d3d5d)
 
-**-- 17. Neighbourhoods where average price  for a super host is greater than for a regular host**<BR>
+
+**-- 17. Neighbourhoods where average price for a super host is greater than for a regular host**<BR>
 SELECT neighbourhood, ROUND(AVG(CASE WHEN host_is_superhost = 't' THEN CAST(REPLACE(price, ',', '') AS INTEGER) END),2) AS Superhost_avg_price<BR>
 FROM listings_austin<BR>
 WHERE<BR>
@@ -298,6 +331,8 @@ ORDER BY Superhost_avg_price DESC;<BR>
 -- where superhosts charge greater than the regular hosts.<BR>
 -- There are 21 neighbourhoods where the average price of listing for super host greater than for a regular host.<BR>
 <BR>
+![Screenshot 2023-09-11 at 11 59 03 AM](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/88946a75-8a71-4ba2-b74a-b348ed5c3ecc)
+
 
 -- Now we look at the ratings scores for a superhost.<BR>
 **-- 18. Ratings and cleanliness scores based on review**<BR>
@@ -318,33 +353,7 @@ host_is_superhost;<BR>
 -- We can see why superhosts perform better than regular hosts from the average ratings.<BR>
 -- Superhosts get better ratings for cleanliness, check-in service, communication, location and the final rating also.
 <BR>
-
--- Other insights<BR>
-**-- 19. Instant bookable - number of listings and average price**<BR>
-SELECT<BR>
-instant_bookable,<BR> 
-COUNT(id) AS num_listings,<BR>
-ROUND(AVG(price),2) AS avg_price<BR>
-FROM<BR>
-listings_austin<BR>
-GROUP BY<BR>
-instant_bookable<BR>
-ORDER BY<BR>
-num_listings DESC;<BR>
-<BR>
-
-**-- 20. Instant bookable - number of listings by neighbourhood**<BR>
-SELECT<BR>
-neighbourhood,<BR>
-instant_bookable,<BR> 
-COUNT(id) AS num_listings,<BR> 
-ROUND(AVG(price),2) AS avg_price<BR>
-FROM<BR>
-listings_austin<BR>
-GROUP BY<BR>
-neighbourhood, instant_bookable<BR>
-ORDER BY<BR>
-num_listings DESC;<BR>
+![Screenshot 2023-09-11 at 12 00 19 PM](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/10fd6bc5-f82c-42f8-8429-c1062595bdff)
 
 
 ## Summary of findings:<BR>
