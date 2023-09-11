@@ -2,7 +2,8 @@
 ![0*NChTo-XqLOxLabIW](https://github.com/vatsalmandalia/Airbnb-Listings-Analysis-SQL-Tableau/assets/63712490/a3f69848-63ef-4c69-9ca1-a903453ad4fc)
 
 
-This repository contains the project on Airbnb Listings Analysis done using SQL and Tableau. This project is inspired from the Guided Project done by Avery Smith on Airbnb Exploratory Data Analysis.
+This repository contains the project on Airbnb Listings Analysis done using SQL and Tableau. This project is inspired from the project - Analysis of Airbnb Data Using SQL - done by Avery Smith.
+[Analysis of Airbnb Data Using SQL](https://www.youtube.com/watch?v=CHb-QvGcRjw)
 
 ## Structure of Analysis
 
