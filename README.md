@@ -16,7 +16,7 @@ This repository contains the project on Airbnb Listings Analysis done using SQL 
 
 Airbnb is an online market-place for property owners to host their properties for tourists looking to book for short-term homestays. It is a medium between hosts and potential customers looking to make book listings in specific locations. Airbnb currently has over 100,000+ listings spread over 6 countries.
 
-For my analysis, I am only considering only the data for Austin, Texas.
+The aim behind this analysis is to understand the local rental market in Austin, Texas and how Airbnb has become the key choice for vacationers interested in temporary accommodation at their holiday destination.
 
 ## Preparation and Cleaning
 
@@ -26,7 +26,9 @@ There are three datasets sourced from Inside Airbnb - listings, calendar, review
 
 In the listings data, the 'price' field is of TEXT data type and contains a non-numeric character '$'. This is treated manually from the 'Modify table' option in 'Edit' menu in DB Browser for SQLite application.
 
-Data has been scraped on 2022-06-08 from the source. Tools employed are DB Browser for SQLite and Tableau Public for visualizing the insights.
+Data has been scraped as on 8th June 2022 from the Inside Airbnb.
+
+For executing queries to manipulate and mine data, I employ DB Browser for SQLite tool. Tableau Public has been utilised to visualize underlying trends and produce impactful dashboards.
 
 ## Business problems
 
@@ -149,9 +151,5 @@ Price per bed: Rollingwood has the highest price per bed rate around $1000, 80% 
 ## Dashboards in Tableau
 
 I have created two dashboards depicting two sets of analysis and insights.
-- Price and Proportion Analysis
-- Revenue Potential and Superhost Status
-
-Here is the link to explore the interactive visualizations in Tableau Public.<BR>
-[Airbnb Listings Analysis](https://public.tableau.com/views/AirbnbAnalysisforAustin/PriceandProportionAnalysis?:language=en-GB&:display_count=n&:origin=viz_share_link)
-
+- Price and Proportion Analysis : [View in Tableau](https://public.tableau.com/views/AirbnbAnalysisforAustin/PriceandProportionAnalysis?:language=en-US&:sid=&:display_count=n&:origin=viz_share_link)
+- Revenue Potential and Superhost Status : [View in Tableau](https://public.tableau.com/views/AirbnbAnalysisforAustin-RevenuePotentialandSuperhostStatus/RevenuePotentialandSuperhostStatus?:language=en-US&:sid=&:display_count=n&:origin=viz_share_link)
